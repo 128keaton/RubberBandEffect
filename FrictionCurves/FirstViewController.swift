@@ -25,43 +25,43 @@ class FirstViewController: UIViewController {
         
     }
     @IBAction func viewDragged(sender: UIPanGestureRecognizer) {
-        let xPosition = sender.locationInView(view).x
-        movingViewLeadingConstraint.constant = linearConstraintValueForXPosition(xPosition)
+        let xPosition = sender.location(in: view).x
+        movingViewLeadingConstraint.constant = linearConstraintValueForXPosition(xPosition: xPosition)
         
-        if (hasExceededVerticalLine(xPosition)) {
-            topViewLeadingConstraint.constant = sqrtConstraintValueForXPosition(xPosition)
-            middleViewLeadingConstraint.constant = lognConstraintValueForXPosition(xPosition)
-            bottomLeadingConstraint.constant = powConstraintValueForXPosition(xPosition)
+        if (hasExceededVerticalLine(xPosition: xPosition)) {
+            topViewLeadingConstraint.constant = sqrtConstraintValueForXPosition(xPosition: xPosition)
+            middleViewLeadingConstraint.constant = lognConstraintValueForXPosition(xPosition: xPosition)
+            bottomLeadingConstraint.constant = powConstraintValueForXPosition(xPosition: xPosition)
             
-            if(sender.state == UIGestureRecognizerState.Ended ){
+            if(sender.state == UIGestureRecognizer.State.ended ){
                 movingViewLeadingConstraint.constant = finalConstraintValue()
                 topViewLeadingConstraint.constant = finalConstraintValue()
                 middleViewLeadingConstraint.constant = finalConstraintValue()
                 bottomLeadingConstraint.constant = finalConstraintValue()
             }
         } else {
-            topViewLeadingConstraint.constant = linearConstraintValueForXPosition(xPosition)
-            middleViewLeadingConstraint.constant = linearConstraintValueForXPosition(xPosition)
-            bottomLeadingConstraint.constant = linearConstraintValueForXPosition(xPosition)
+            topViewLeadingConstraint.constant = linearConstraintValueForXPosition(xPosition: xPosition)
+            middleViewLeadingConstraint.constant = linearConstraintValueForXPosition(xPosition: xPosition)
+            bottomLeadingConstraint.constant = linearConstraintValueForXPosition(xPosition: xPosition)
         }
 
     }
 
 
     func linearConstraintValueForXPosition(xPosition : CGFloat) -> CGFloat {
-        return xPosition - CGRectGetWidth(movingView.frame)/2
+        return xPosition - ((movingView.frame).width)/2
     }
     func sqrtConstraintValueForXPosition(xPosition : CGFloat) -> CGFloat {
-        let linearValue = linearConstraintValueForXPosition(xPosition)
+        let linearValue = linearConstraintValueForXPosition(xPosition: xPosition)
         return finalConstraintValue() + sqrt(linearValue - finalConstraintValue())
     }
     func powConstraintValueForXPosition(xPosition : CGFloat) -> CGFloat {
-        let linearValue = linearConstraintValueForXPosition(xPosition)
+        let linearValue = linearConstraintValueForXPosition(xPosition: xPosition)
         let powValue = pow(linearValue/finalConstraintValue(), 4.0)
         return linearValue - powValue
     }
     func lognConstraintValueForXPosition(xPosition : CGFloat) -> CGFloat {
-        let linearValue = linearConstraintValueForXPosition(xPosition)
+        let linearValue = linearConstraintValueForXPosition(xPosition: xPosition)
         return finalConstraintValue() * (1 + log10(linearValue/finalConstraintValue()))
     }
     
@@ -69,14 +69,14 @@ class FirstViewController: UIViewController {
 //Helping methods
     func addVerticalLine() {
         let lineThickness : CGFloat = 2.0;
-        let lineFrame = CGRectMake(horizontalLimit - lineThickness/2, 0, lineThickness, CGRectGetHeight(view.frame))
-        var verticalLineView : UIView = UIView (frame: lineFrame)
-        verticalLineView.backgroundColor = UIColor.redColor()
+        let lineFrame = CGRect(x: horizontalLimit - lineThickness/2, y: 0, width: lineThickness, height: view.frame.height)
+        let verticalLineView : UIView = UIView (frame: lineFrame)
+        verticalLineView.backgroundColor = UIColor.red
         view.addSubview(verticalLineView)
     }
     
     func finalConstraintValue() -> CGFloat {
-        let viewWidth = CGRectGetWidth(movingView.frame)
+        let viewWidth = (movingView.frame).width
         return horizontalLimit - viewWidth/2
     }
     func hasExceededVerticalLine(xPosition : CGFloat) -> Bool {

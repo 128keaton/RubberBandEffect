@@ -20,18 +20,18 @@ class SecondViewController: UIViewController {
     }
 
     @IBAction func viewDragged(sender: UIPanGestureRecognizer) {
-        let yTranslation = sender.translationInView(view).y
+        let yTranslation = sender.translation(in: view).y
         
-        if (topViewConstraint.hasExceeded(verticalLimit)){
+        if (topViewConstraint.hasExceeded(verticalLimit: verticalLimit)){
             totalTranslation += yTranslation
-            topViewConstraint.constant = logConstraintValueForYPosition(totalTranslation)
-            if(sender.state == UIGestureRecognizerState.Ended ){
+            topViewConstraint.constant = logConstraintValueForYPosition(yPosition: totalTranslation)
+            if(sender.state == UIGestureRecognizer.State.ended ){
                 animateViewBackToLimit()
             }
         } else {
             topViewConstraint.constant += yTranslation
         }
-        sender.setTranslation(CGPointZero, inView: view)
+        sender.setTranslation(CGPoint.zero, in: view)
     }
     
     func logConstraintValueForYPosition(yPosition : CGFloat) -> CGFloat {
@@ -40,7 +40,7 @@ class SecondViewController: UIViewController {
     func animateViewBackToLimit() {
         self.topViewConstraint.constant = self.verticalLimit
         
-        UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 10, options: UIViewAnimationOptions.AllowUserInteraction, animations: { () -> Void in
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 10, options: UIView.AnimationOptions.allowUserInteraction, animations: { () -> Void in
             self.view.layoutIfNeeded()
             self.totalTranslation = -200
             }, completion: nil)
